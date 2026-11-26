@@ -183,7 +183,7 @@ fn sendToolsList(out: *Io.Writer, id: ?std.json.Value) !void {
 fn runCalc(ctx: proto.Ctx) !void {
     const expr = proto.argStr(ctx.args, "expr", "");
     const digits = proto.argDigits(ctx.args);
-    const frac = proto.argBool(ctx.args, "frac");
+    const frac = proto.argBool(ctx.args, "frac", false);
     if (expr.len > 4000) {
         try proto.sendToolError(ctx.out, ctx.id, "Invalid params: expr demasiado larga (max 4000).");
         return;

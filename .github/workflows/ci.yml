@@ -30,16 +30,5 @@ jobs:
       - name: Check Zig formatting (zig fmt --check)
         run: zig fmt --check .
 
-      - name: Run standalone unit tests
-        run: |
-          set -e
-          zig test emcp/src/registro.zig
-          zig test emcp/src/core/args.zig
-          zig test emcp/src/core/jsonw.zig
-          zig test emcp/src/core/proto.zig
-          zig test emcp/src/mcp/search.zig
-          zig test mcp-crypto/src/registro.zig
-          zig test mcp-runner/src/registro.zig
-          zig test mcp-time/src/registro.zig
-          zig test mcp-math/src/protocol.zig
-          zig test mcp-math/src/bigint/addsub.zig
+      - name: Run unit tests (zig build test)
+        run: zig build test --summary all
