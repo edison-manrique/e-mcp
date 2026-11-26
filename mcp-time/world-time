@@ -1,0 +1,4 @@
+#!/bin/sh
+# Lanzador del servidor MCP "world-time" (Linux/macOS).
+# Llama al programa real dentro de su propia carpeta, sin rutas absolutas.
+exec "$(dirname "$0")/zig-out/bin/world-time" "$@"

@@ -1,0 +1,4 @@
+#!/bin/sh
+# Lanzador del servidor MCP "mcp-ml" (Linux/macOS).
+# Llama al programa real dentro de su propia carpeta, sin rutas absolutas.
+exec "$(dirname "$0")/zig-out/bin/mcp-ml" "$@"
