@@ -209,4 +209,3 @@ test "sendJsonError escapa comillas y sendToolText/Error producen JSON valido" {
     try sendToolError(&w2, .{ .integer = 2 }, "fallo");
     try t.expect(std.mem.indexOf(u8, w2.buffered(), "\"isError\":true") != null);
 }
-

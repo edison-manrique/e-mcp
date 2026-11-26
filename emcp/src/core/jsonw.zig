@@ -10,6 +10,18 @@ pub fn writeJsonStr(out: *Io.Writer, s: []const u8) !void {
     // Jamas emitir UTF-8 invalido: secuencia mala -> U+FFFD.
     var k: usize = 0;
     while (k < s.len) {
+        // Fast-path: escribe tramos contiguos de ASCII imprimible sin escape en una sola llamada.
+        const ascii_start = k;
+        while (k < s.len) {
+            const b = s[k];
+            if (b < 0x20 or b >= 0x80 or b == '"' or b == '\\') break;
+            k += 1;
+        }
+        if (k > ascii_start) {
+            try out.writeAll(s[ascii_start..k]);
+            if (k >= s.len) break;
+        }
+
         const c = s[k];
         switch (c) {
             '"' => {
@@ -46,9 +58,6 @@ pub fn writeJsonStr(out: *Io.Writer, s: []const u8) !void {
                     const hi: u8 = c >> 4;
                     const lo: u8 = c & 0xF;
                     try out.writeAll(&[_]u8{ hexDe(hi), hexDe(lo) });
-                    k += 1;
-                } else if (c < 0x80) {
-                    try out.writeAll(&[_]u8{c});
                     k += 1;
                 } else {
                     const n = secUtf8(s[k..]);
