@@ -62,21 +62,35 @@ test "emcp.search: filtra por nombre, descripcion, multi-token y mcp" {
         .{ .mcp_name = "mcp-time", .tool_name = "time", .description = "Hora y fecha en cualquier zona horaria" },
         .{ .mcp_name = "mcp-math", .tool_name = "calc", .description = "Calculo matematico avanzado" },
         .{ .mcp_name = "mcp-ml", .tool_name = "sindy", .description = "Descubrimiento simbolico desde CSV" },
-        .{ .mcp_name = "mcp-proxy", .tool_name = "proxy_fetch", .description = "Peticion HTTP/HTTPS por proxy seguro" },
+        .{ .mcp_name = "mcp-runner", .tool_name = "run_code", .description = "Compila y ejecuta codigo Rust/Zig/C/Python/TS/JS" },
     };
 
+    // busqueda multi-token insensible a mayusculas
     const r1 = try searchTools(t.allocator, &entries, "ZONA horaria", null, 10);
     defer t.allocator.free(r1);
     try t.expectEqual(@as(usize, 1), r1.len);
     try t.expectEqualStrings("time", r1[0].tool_name);
 
-    const r2 = try searchTools(t.allocator, &entries, "http", "mcp-proxy", 10);
+    // filtro por mcp + query
+    const r2 = try searchTools(t.allocator, &entries, "codigo", "mcp-runner", 10);
     defer t.allocator.free(r2);
     try t.expectEqual(@as(usize, 1), r2.len);
-    try t.expectEqualStrings("proxy_fetch", r2[0].tool_name);
+    try t.expectEqualStrings("run_code", r2[0].tool_name);
 
+    // limit: query vacia devuelve todos hasta el cap
     const r3 = try searchTools(t.allocator, &entries, "", null, 2);
     defer t.allocator.free(r3);
     try t.expectEqual(@as(usize, 2), r3.len);
+
+    // sin resultados
+    const r4 = try searchTools(t.allocator, &entries, "blender", null, 10);
+    defer t.allocator.free(r4);
+    try t.expectEqual(@as(usize, 0), r4.len);
+
+    // busqueda por nombre de tool
+    const r5 = try searchTools(t.allocator, &entries, "sindy", null, 10);
+    defer t.allocator.free(r5);
+    try t.expectEqual(@as(usize, 1), r5.len);
+    try t.expectEqualStrings("mcp-ml", r5[0].mcp_name);
 }
 
