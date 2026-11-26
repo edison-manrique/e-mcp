@@ -37,3 +37,4 @@ Configura `emcp` como servidor MCP local en tu cliente (por ejemplo OpenCode):
 ## Licencia
 
 Distribuido bajo la licencia **Apache 2.0**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+

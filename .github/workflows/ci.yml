@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  zig-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Zig 0.17.0
+        uses: mlugg/setup-zig@v2
+        with:
+          version: 0.17.0
+
+      - name: Check Zig 0.17.0 syntax (ast-check)
+        run: |
+          set -e
+          count=0
+          while IFS= read -r -d '' file; do
+            zig ast-check "$file"
+            count=$((count + 1))
+          done < <(find . -name '*.zig' -not -path '*/.zig-cache/*' -print0)
+          echo "Checked $count Zig files with 0 syntax errors."
+
+      - name: Run standalone emcp unit tests
+        run: |
+          set -e
+          zig test emcp/src/registro.zig
+          zig test emcp/src/core/args.zig
+          zig test emcp/src/core/jsonw.zig
+          zig test emcp/src/core/proto.zig
+          zig test emcp/src/mcp/search.zig

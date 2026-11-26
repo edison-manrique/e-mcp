@@ -18,6 +18,7 @@ pub const pool = @import("core/pool.zig");
 pub const tools = @import("mcp/tools.zig");
 pub const registry = @import("mcp/registry.zig");
 pub const meta = @import("mcp/meta.zig");
+pub const search = @import("mcp/search.zig");
 
 test {
     _ = @import("registro.zig");
@@ -34,4 +35,5 @@ test {
     _ = @import("mcp/tools.zig");
     _ = @import("mcp/registry.zig");
     _ = @import("mcp/meta.zig");
+    _ = @import("mcp/search.zig");
 }

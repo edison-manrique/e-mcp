@@ -20,6 +20,7 @@ pub const USAGE_CLI =
     \\Registro:
     \\  emcp --registro                 Imprime el manifiesto del servidor.
     \\  emcp --registrados              Lista los MCPs registrados.
+    \\  emcp --search <query>           Busca herramientas disponibles por nombre o descripcion.
     \\  emcp --registrar <origen> [opciones]
     \\        origen: ruta local a un binario o URL https://
     \\        Requiere el `<bin>.registro.json` hermano (hash + FIRMA obligatoria).
