@@ -108,3 +108,31 @@ test "writeJsonStr escapa control y comillas" {
     try writeJsonStr(&w, "a\"b\n\tc");
     try t.expectEqualStrings("\"a\\\"b\\n\\tc\"", w.buffered());
 }
+
+test "writeJsonStr escapa caracteres de control adicionales" {
+    const t = std.testing;
+    // \x01 (SOH), \x0B (VT), \x1F (US) deben quedar como \u00XX
+    var buf: [64]u8 = undefined;
+    var w: Io.Writer = .fixed(&buf);
+    try writeJsonStr(&w, "\x01");
+    try t.expectEqualStrings("\"\\u0001\"", w.buffered());
+
+    var buf2: [64]u8 = undefined;
+    var w2: Io.Writer = .fixed(&buf2);
+    try writeJsonStr(&w2, "\x0B");
+    try t.expectEqualStrings("\"\\u000b\"", w2.buffered());
+
+    var buf3: [64]u8 = undefined;
+    var w3: Io.Writer = .fixed(&buf3);
+    try writeJsonStr(&w3, "\x1F");
+    try t.expectEqualStrings("\"\\u001f\"", w3.buffered());
+}
+
+test "writeJsonStr UTF-8 invalido reemplazado con U+FFFD" {
+    const t = std.testing;
+    var buf: [32]u8 = undefined;
+    var w: Io.Writer = .fixed(&buf);
+    // 0xFF es secuencia UTF-8 invalida -> debe emitir \ufffd
+    try writeJsonStr(&w, "\xFF");
+    try t.expectEqualStrings("\"\\ufffd\"", w.buffered());
+}

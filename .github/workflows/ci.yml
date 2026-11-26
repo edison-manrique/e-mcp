@@ -35,3 +35,17 @@ jobs:
           zig test emcp/src/core/jsonw.zig
           zig test emcp/src/core/proto.zig
           zig test emcp/src/mcp/search.zig
+
+      - name: Build mcp-time (release-fast)
+        run: |
+          set -e
+          cd mcp-time
+          zig build -Doptimize=ReleaseFast
+          echo "mcp-time build OK"
+
+      - name: Build mcp-crypto (release-fast)
+        run: |
+          set -e
+          cd mcp-crypto
+          zig build -Doptimize=ReleaseFast
+          echo "mcp-crypto build OK"

@@ -41,6 +41,16 @@ pub fn array(args: ?Value, key: []const u8) ?[]const Value {
     return v.array.items;
 }
 
+/// Devuelve un f64 desde una clave JSON `number` (integer o float).
+pub fn float(args: ?Value, key: []const u8) ?f64 {
+    const v = get(args, key) orelse return null;
+    return switch (v) {
+        .float => |f| f,
+        .integer => |i| @floatFromInt(i),
+        else => null,
+    };
+}
+
 pub fn strOr(args: ?Value, key: []const u8, dflt: []const u8) []const u8 {
     return str(args, key) orelse dflt;
 }
@@ -58,4 +68,21 @@ test "getters tolerantes" {
     try std.testing.expect(str(v, "i") == null);
     try std.testing.expect(get(v, "nul") == null);
     try std.testing.expectEqualStrings("d", strOr(v, "falta", "d"));
+}
+
+test "float getter: float y integer" {
+    var parsed = try std.json.parseFromSlice(Value, std.testing.allocator,
+        \\{"f":3.14,"i":7,"s":"no"}
+    , .{});
+    defer parsed.deinit();
+    const v = parsed.value;
+    // float desde .float
+    const f1 = float(v, "f").?;
+    try std.testing.expect(f1 > 3.13 and f1 < 3.15);
+    // float desde .integer (coercion)
+    try std.testing.expectEqual(@as(f64, 7.0), float(v, "i").?);
+    // float desde string -> null
+    try std.testing.expect(float(v, "s") == null);
+    // clave ausente -> null
+    try std.testing.expect(float(v, "falta") == null);
 }
