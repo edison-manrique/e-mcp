@@ -22,7 +22,6 @@ const sha256 = @import("../hash/sha256.zig");
 ///    • sign(msg, sk, aux)      → 64 B (r ‖ s)
 ///    • verify(msg, pub, sig)   → bool
 /// ═══════════════════════════════════════════════════════════════════════════
-
 const BigInt256 = field.BigInt256;
 const Scalar256 = scalar.Scalar256;
 const Point = point.Point;

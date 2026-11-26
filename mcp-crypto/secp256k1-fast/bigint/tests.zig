@@ -419,14 +419,14 @@ test "BigInt256 reduction edge cases" {
     const one = BigInt256.one;
     const zero = BigInt256.zero;
     const p = BigInt256.P;
-    
+
     // P mod P = 0
     try std.testing.expectEqual(BigInt256.reduce(p, zero).limbs, zero.limbs);
-    
+
     // P-1 mod P = P-1
     const p_minus_1 = p.sub(one).result;
     try std.testing.expectEqual(BigInt256.reduce(p_minus_1, zero).limbs, p_minus_1.limbs);
-    
+
     // P+1 mod P = 1
     const p_plus_1 = p.add(one).result;
     try std.testing.expectEqual(BigInt256.reduce(p_plus_1, zero).limbs, one.limbs);

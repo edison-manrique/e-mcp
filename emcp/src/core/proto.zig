@@ -127,8 +127,8 @@ test "bracesBalanced junta JSON partido y rechaza incompleto" {
     try t.expect(bracesBalanced("{\"a\":{\"b\":[1,2]}}"));
     try t.expect(!bracesBalanced("{\"a\":{"));
     try t.expect(bracesBalanced("{\"a\":\"}\"}")); // corchete dentro de string: no cierra
-    try t.expect(!bracesBalanced("}"));           // cierre huerfano -> false (bug previo: retornaba true)
-    try t.expect(!bracesBalanced("{\"a\":1}}"));  // un } de mas
-    try t.expect(bracesBalanced("[1,2,3]"));      // array raiz valido
-    try t.expect(!bracesBalanced("[1,2"));        // array incompleto
+    try t.expect(!bracesBalanced("}")); // cierre huerfano -> false (bug previo: retornaba true)
+    try t.expect(!bracesBalanced("{\"a\":1}}")); // un } de mas
+    try t.expect(bracesBalanced("[1,2,3]")); // array raiz valido
+    try t.expect(!bracesBalanced("[1,2")); // array incompleto
 }

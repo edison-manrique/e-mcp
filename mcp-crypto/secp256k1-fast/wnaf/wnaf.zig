@@ -5,7 +5,6 @@ const Scalar256 = scalar.Scalar256;
 /// ═══════════════════════════════════════════════════════════════════════════
 ///  source/wnaf/wnaf.zig — Windowed Non-Adjacent Form (wNAF)
 /// ═══════════════════════════════════════════════════════════════════════════
-
 pub const WnafResult = struct {
     wnaf: [260]i8,
     len: usize,

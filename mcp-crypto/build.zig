@@ -9,17 +9,18 @@ const std = @import("std");
 // Por defecto optimiza ReleaseFast (este servidor busca velocidad).
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
-    // ReleaseFast POR DEFECTO.
+    // Zig 0.17: OptimizeMode usa snake_case -> .debug .safe .fast .small
+    // .fast POR DEFECTO.
     //
     // Antes se usaba `standardOptimizeOption(.{ .preferred_optimize_mode = .ReleaseFast })`,
-    // pero esa función devuelve .Debug salvo que se pase `-Drelease`/`--release`.
+    // pero esa función devuelve .debug salvo que se pase `-Drelease`/`--release`.
     // Resultado: `zig build` a secas compilaba el servidor en Debug y las
     // operaciones de curva iban ~5x más lentas (vanity: ~80 k/s en vez de ~1 M/s).
     //
-    //   zig build                  -> ReleaseFast
-    //   zig build --release=safe   -> ReleaseSafe
-    //   zig build -Doptimize=Debug -> Debug
-    const optimize = b.option(std.builtin.OptimizeMode, "optimize", "Modo de optimización (por defecto: ReleaseFast)") orelse .ReleaseFast;
+    //   zig build                  -> .fast
+    //   zig build -Doptimize=safe  -> .safe
+    //   zig build -Doptimize=debug -> .debug
+    const optimize = b.option(std.builtin.OptimizeMode, "optimize", "Modo de optimización (por defecto: fast)") orelse .fast;
 
     // ---------- Módulo de la librería criptográfica ----------
     const secp_mod = b.createModule(.{
@@ -51,7 +52,7 @@ pub fn build(b: *std.Build) void {
     const run_step = b.step("run", "Ejecuta el binario (servidor MCP o CLI)");
     const run_cmd = b.addRunArtifact(exe);
     run_cmd.step.dependOn(b.getInstallStep());
-    if (b.args) |args| run_cmd.addArgs(args);
+    run_cmd.addPassthruArgs();
     run_step.dependOn(&run_cmd.step);
 
     // ---------- Tests ----------
@@ -97,7 +98,7 @@ pub fn build(b: *std.Build) void {
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/main.zig"),
             .target = linux,
-            .optimize = .ReleaseFast,
+            .optimize = .fast,
             .imports = &.{
                 .{ .name = "mcp_crypto", .module = mod_unix },
             },

@@ -67,31 +67,31 @@ pub fn snapToPhysicalConstantScaleInvariant(w: f64) f64 {
     // 3. Constantes universales exactas y factores científicos (v2 expandida)
     const universal_constants = [_]f64{
         // Fracciones físicas importantes
-        4.0 / 3.0,          // 1.33333... (Ley de Snell agua/vidrio)
-        5.0 / 3.0,          // 1.66666... (Coeficiente adiabático gas monoatómico)
-        8.0 / 3.0,          // 2.66666... (Parámetro beta atractor caótico de Lorenz)
+        4.0 / 3.0, // 1.33333... (Ley de Snell agua/vidrio)
+        5.0 / 3.0, // 1.66666... (Coeficiente adiabático gas monoatómico)
+        8.0 / 3.0, // 2.66666... (Parámetro beta atractor caótico de Lorenz)
 
         // Constantes matemáticas fundamentales
-        std.math.e,          // 2.71828... (Número de Euler)
-        std.math.pi / 4.0,   // 0.78539... (pi/4)
-        std.math.pi / 2.0,   // 1.57079... (pi/2)
-        std.math.pi,          // 3.14159... (pi)
-        2.0 * std.math.pi,   // 6.28318... (tau / 2*pi)
-        @log(2.0),           // 0.69314... (ln(2))
-        @sqrt(2.0),          // 1.41421... (√2)
-        @sqrt(3.0),          // 1.73205... (√3)
-        1.6180339887498948,   // Φ (golden ratio / número áureo)
+        std.math.e, // 2.71828... (Número de Euler)
+        std.math.pi / 4.0, // 0.78539... (pi/4)
+        std.math.pi / 2.0, // 1.57079... (pi/2)
+        std.math.pi, // 3.14159... (pi)
+        2.0 * std.math.pi, // 6.28318... (tau / 2*pi)
+        @log(2.0), // 0.69314... (ln(2))
+        @sqrt(2.0), // 1.41421... (√2)
+        @sqrt(3.0), // 1.73205... (√3)
+        1.6180339887498948, // Φ (golden ratio / número áureo)
 
         // Constantes físicas
-        5.67037,             // Constante de radiación de Stefan-Boltzmann (sigma)
-        6.67430,             // Constante de gravitación universal G
-        8.98755,             // Constante de Coulomb k_c
-        9.80665,             // Aceleración de gravedad g estándar
-        9.81,                // Gravedad redondeada estándar
+        5.67037, // Constante de radiación de Stefan-Boltzmann (sigma)
+        6.67430, // Constante de gravitación universal G
+        8.98755, // Constante de Coulomb k_c
+        9.80665, // Aceleración de gravedad g estándar
+        9.81, // Gravedad redondeada estándar
 
         // Factores derivados de la gravedad
-        2.00606668,          // Factor de período de péndulo: 2*pi / sqrt(9.81)
-        4.42867926,          // Coeficiente de Torricelli: sqrt(2 * 9.80665)
+        2.00606668, // Factor de período de péndulo: 2*pi / sqrt(9.81)
+        4.42867926, // Coeficiente de Torricelli: sqrt(2 * 9.80665)
     };
 
     for (universal_constants) |u_const| {

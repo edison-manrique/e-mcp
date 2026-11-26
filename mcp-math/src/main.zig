@@ -925,10 +925,10 @@ fn cliErr(err: *Io.Writer, msg: []const u8) u8 {
 }
 
 const FLAGS = [_][]const u8{
-    "--help", "--help-topic", "--version", "--expr", "-e", "--digits", "-d",
-    "--frac", "--op",     "--a",       "--b",    "--m", "--e",      "--prec",
-    "--out",  "--px",     "--py",      "--qx",   "--qy", "--k",     "--p",
-    "--ca",   "--cb",     "--cn",      "--n",    "--gx", "--gy",
+    "--help", "--help-topic", "--version", "--expr", "-e",   "--digits", "-d",
+    "--frac", "--op",         "--a",       "--b",    "--m",  "--e",      "--prec",
+    "--out",  "--px",         "--py",      "--qx",   "--qy", "--k",      "--p",
+    "--ca",   "--cb",         "--cn",      "--n",    "--gx", "--gy",
 };
 
 fn runCli(io: Io, args: []const [:0]const u8) !u8 {

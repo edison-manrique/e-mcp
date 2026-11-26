@@ -4,7 +4,6 @@ const builtin = @import("builtin");
 /// ═══════════════════════════════════════════════════════════════════════════
 ///  source/field/addsub.zig — 256-bit Addition and Subtraction
 /// ═══════════════════════════════════════════════════════════════════════════
-
 pub const AddResult = struct {
     limbs: [4]u64,
     carry: u1,

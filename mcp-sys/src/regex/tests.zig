@@ -305,4 +305,3 @@ test "regex: sin retroceso patologico (a+)+$ sobre 'a...ab'" {
     defer re.deinit();
     try t.expect(re.find(hay) == null); // termina rapido (lineal), no 2^n
 }
-

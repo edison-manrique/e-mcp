@@ -109,8 +109,18 @@ fn stlsqStepwise(
             if (has_bias and f == bias_idx) continue;
             support[f] = false;
             const bic = try stlsqBicForSupport(
-                temp_alloc, g_total, z_total, y2_total, n_samples, n_features, ridge,
-                support, active_indices, g_sub, z_sub, w_sub,
+                temp_alloc,
+                g_total,
+                z_total,
+                y2_total,
+                n_samples,
+                n_features,
+                ridge,
+                support,
+                active_indices,
+                g_sub,
+                z_sub,
+                w_sub,
             );
             support[f] = true;
             if (bic) |b| {
@@ -127,8 +137,18 @@ fn stlsqStepwise(
             if (support[f]) continue;
             support[f] = true;
             const bic = try stlsqBicForSupport(
-                temp_alloc, g_total, z_total, y2_total, n_samples, n_features, ridge,
-                support, active_indices, g_sub, z_sub, w_sub,
+                temp_alloc,
+                g_total,
+                z_total,
+                y2_total,
+                n_samples,
+                n_features,
+                ridge,
+                support,
+                active_indices,
+                g_sub,
+                z_sub,
+                w_sub,
             );
             support[f] = false;
             if (bic) |b| {
@@ -517,8 +537,18 @@ pub fn solveAnalyticalStlsq(
                 if (((mask >> @intCast(j)) & 1) != 0) active[optional[j]] = true;
             }
             const bic = try stlsqBicForSupport(
-                temp_alloc, g_total, z_total, y2_total, n_samples, n_features, options.ridge,
-                active, active_indices_buf, g_support, z_support, w_support,
+                temp_alloc,
+                g_total,
+                z_total,
+                y2_total,
+                n_samples,
+                n_features,
+                options.ridge,
+                active,
+                active_indices_buf,
+                g_support,
+                z_support,
+                w_support,
             );
             if (bic) |b| {
                 if (b < best_score) {
@@ -531,8 +561,20 @@ pub fn solveAnalyticalStlsq(
         // Empezar desde el mejor soporte de STLSQ.
         @memcpy(active, best_support);
         const s1 = try stlsqStepwise(
-            temp_alloc, g_total, z_total, y2_total, n_samples, n_features,
-            bias_idx, has_bias, options.ridge, active, active_indices_buf, g_support, z_support, w_support,
+            temp_alloc,
+            g_total,
+            z_total,
+            y2_total,
+            n_samples,
+            n_features,
+            bias_idx,
+            has_bias,
+            options.ridge,
+            active,
+            active_indices_buf,
+            g_support,
+            z_support,
+            w_support,
         );
         if (s1 < best_score) {
             best_score = s1;
@@ -543,8 +585,20 @@ pub fn solveAnalyticalStlsq(
         @memset(active, false);
         if (has_bias) active[bias_idx] = true;
         const s2 = try stlsqStepwise(
-            temp_alloc, g_total, z_total, y2_total, n_samples, n_features,
-            bias_idx, has_bias, options.ridge, active, active_indices_buf, g_support, z_support, w_support,
+            temp_alloc,
+            g_total,
+            z_total,
+            y2_total,
+            n_samples,
+            n_features,
+            bias_idx,
+            has_bias,
+            options.ridge,
+            active,
+            active_indices_buf,
+            g_support,
+            z_support,
+            w_support,
         );
         if (s2 < best_score) {
             best_score = s2;

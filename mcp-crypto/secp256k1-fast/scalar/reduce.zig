@@ -7,7 +7,6 @@ const raw = @import("raw.zig");
 /// ═══════════════════════════════════════════════════════════════════════════
 ///  source/scalar/reduce.zig — Modular Reduction mod N for Scalar256
 /// ═══════════════════════════════════════════════════════════════════════════
-
 const C_LIMBS = [4]u64{
     0x402DA1732FC9BEBF,
     0x4551231950B75FC4,

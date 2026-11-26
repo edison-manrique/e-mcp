@@ -137,7 +137,7 @@ fn vivo(pid: u32) bool {
         if (win.GetExitCodeProcess(h, &code) == 0) return false;
         return code == win.STILL_ACTIVE;
     }
-    std.posix.kill(@intCast(pid), @enumFromInt(0)) catch |e| switch (e) {
+    std.posix.kill(@intCast(pid), @fromBackingInt(@intCast(0))) catch |e| switch (e) {
         error.ProcessNotFound => return false,
         else => return true, // sin permiso pero existe
     };
@@ -222,7 +222,7 @@ pub fn lanzar(gpa: std.mem.Allocator, io: Io, cmd: []const u8, cwd: ?[]const u8,
     defer gpa.free(perr);
     var ferr = try Io.Dir.cwd().createFile(io, perr, .{});
     errdefer ferr.close(io);
-    const argv: []const []const u8 = if (is_win) &.{ "cmd.exe", "/D", "/Q" } else &.{ "sh" };
+    const argv: []const []const u8 = if (is_win) &.{ "cmd.exe", "/D", "/Q" } else &.{"sh"};
     if (is_win) {
         // El nieto NO debe heredar nuestros pipes de stdio: si los
         // hereda, quien nos llamó espera EOF hasta que el nieto muera

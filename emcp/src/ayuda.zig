@@ -43,4 +43,4 @@ pub const USAGE_CLI =
     \\Al arrancar, cada MCP se re-verifica UNA vez (sha256 + firma); en ejecucion
     \\no se repite, para que `tools/call` sea lo mas rapido posible.
     \\
-;
+    ;

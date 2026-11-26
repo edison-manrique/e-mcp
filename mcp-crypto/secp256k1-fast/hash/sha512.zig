@@ -125,13 +125,13 @@ pub fn compressBlock(st: *[8]u64, block: *const [128]u8) void {
     for (0..16) |i| {
         const offset = i * 8;
         w[i] = (@as(u64, block[offset + 0]) << 56) |
-               (@as(u64, block[offset + 1]) << 48) |
-               (@as(u64, block[offset + 2]) << 40) |
-               (@as(u64, block[offset + 3]) << 32) |
-               (@as(u64, block[offset + 4]) << 24) |
-               (@as(u64, block[offset + 5]) << 16) |
-               (@as(u64, block[offset + 6]) << 8)  |
-               (@as(u64, block[offset + 7]));
+            (@as(u64, block[offset + 1]) << 48) |
+            (@as(u64, block[offset + 2]) << 40) |
+            (@as(u64, block[offset + 3]) << 32) |
+            (@as(u64, block[offset + 4]) << 24) |
+            (@as(u64, block[offset + 5]) << 16) |
+            (@as(u64, block[offset + 6]) << 8) |
+            (@as(u64, block[offset + 7]));
     }
     compressWords(st, &w);
 }
@@ -195,15 +195,21 @@ pub const Sha512Context = struct {
 
         @memset(self.buffer[self.buf_len..112], 0);
         const total_bits = self.count * 8;
-        self.buffer[112] = 0; self.buffer[113] = 0; self.buffer[114] = 0; self.buffer[115] = 0;
-        self.buffer[116] = 0; self.buffer[117] = 0; self.buffer[118] = 0; self.buffer[119] = 0;
+        self.buffer[112] = 0;
+        self.buffer[113] = 0;
+        self.buffer[114] = 0;
+        self.buffer[115] = 0;
+        self.buffer[116] = 0;
+        self.buffer[117] = 0;
+        self.buffer[118] = 0;
+        self.buffer[119] = 0;
         self.buffer[120] = @intCast((total_bits >> 56) & 0xff);
         self.buffer[121] = @intCast((total_bits >> 48) & 0xff);
         self.buffer[122] = @intCast((total_bits >> 40) & 0xff);
         self.buffer[123] = @intCast((total_bits >> 32) & 0xff);
         self.buffer[124] = @intCast((total_bits >> 24) & 0xff);
         self.buffer[125] = @intCast((total_bits >> 16) & 0xff);
-        self.buffer[126] = @intCast((total_bits >> 8)  & 0xff);
+        self.buffer[126] = @intCast((total_bits >> 8) & 0xff);
         self.buffer[127] = @intCast(total_bits & 0xff);
 
         compressBlock(&self.state, &self.buffer);
@@ -216,7 +222,7 @@ pub const Sha512Context = struct {
             out[i * 8 + 3] = @intCast((val >> 32) & 0xff);
             out[i * 8 + 4] = @intCast((val >> 24) & 0xff);
             out[i * 8 + 5] = @intCast((val >> 16) & 0xff);
-            out[i * 8 + 6] = @intCast((val >> 8)  & 0xff);
+            out[i * 8 + 6] = @intCast((val >> 8) & 0xff);
             out[i * 8 + 7] = @intCast(val & 0xff);
         }
     }

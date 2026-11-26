@@ -10,7 +10,6 @@ pub const convert = @import("convert.zig");
 /// ═══════════════════════════════════════════════════════════════════════════
 ///  source/scalar/root.zig — Scalar256 Struct & Scalar API
 /// ═══════════════════════════════════════════════════════════════════════════
-
 /// Optimized 256-bit Scalar for secp256k1 (modulo N)
 pub const Scalar256 = struct {
     limbs: [4]u64,

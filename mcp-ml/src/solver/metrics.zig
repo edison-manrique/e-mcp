@@ -6,7 +6,6 @@
 const std = @import("std");
 
 /// Métricas de bondad de ajuste para evaluación cuantitativa de modelos descubiertos
-
 /// Error Cuadrático Medio (Mean Squared Error)
 /// Mide la magnitud promedio de los errores al cuadrado entre predicciones y valores reales.
 pub fn mse(y_true: []const f64, y_pred: []const f64) f64 {

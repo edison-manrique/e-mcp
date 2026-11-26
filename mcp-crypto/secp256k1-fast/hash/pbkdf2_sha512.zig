@@ -129,7 +129,7 @@ pub fn deriveMnemonicNoPassphrase(pkey: *const PrecomputedKey, out: *[64]u8) voi
         out[i * 8 + 3] = @intCast((val >> 32) & 0xff);
         out[i * 8 + 4] = @intCast((val >> 24) & 0xff);
         out[i * 8 + 5] = @intCast((val >> 16) & 0xff);
-        out[i * 8 + 6] = @intCast((val >> 8)  & 0xff);
+        out[i * 8 + 6] = @intCast((val >> 8) & 0xff);
         out[i * 8 + 7] = @intCast(val & 0xff);
     }
 }
@@ -164,13 +164,13 @@ pub fn deriveWithPrecomputed(pkey: *const PrecomputedKey, salt: []const u8, iter
     inline for (0..8) |i| {
         const off = i * 8;
         U[i] = (@as(u64, u_digest[off + 0]) << 56) |
-               (@as(u64, u_digest[off + 1]) << 48) |
-               (@as(u64, u_digest[off + 2]) << 40) |
-               (@as(u64, u_digest[off + 3]) << 32) |
-               (@as(u64, u_digest[off + 4]) << 24) |
-               (@as(u64, u_digest[off + 5]) << 16) |
-               (@as(u64, u_digest[off + 6]) << 8)  |
-               (@as(u64, u_digest[off + 7]));
+            (@as(u64, u_digest[off + 1]) << 48) |
+            (@as(u64, u_digest[off + 2]) << 40) |
+            (@as(u64, u_digest[off + 3]) << 32) |
+            (@as(u64, u_digest[off + 4]) << 24) |
+            (@as(u64, u_digest[off + 5]) << 16) |
+            (@as(u64, u_digest[off + 6]) << 8) |
+            (@as(u64, u_digest[off + 7]));
     }
 
     var T = U;
@@ -213,7 +213,7 @@ pub fn deriveWithPrecomputed(pkey: *const PrecomputedKey, salt: []const u8, iter
         out[i * 8 + 3] = @intCast((val >> 32) & 0xff);
         out[i * 8 + 4] = @intCast((val >> 24) & 0xff);
         out[i * 8 + 5] = @intCast((val >> 16) & 0xff);
-        out[i * 8 + 6] = @intCast((val >> 8)  & 0xff);
+        out[i * 8 + 6] = @intCast((val >> 8) & 0xff);
         out[i * 8 + 7] = @intCast(val & 0xff);
     }
 }

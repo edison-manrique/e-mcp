@@ -4,10 +4,11 @@ const std = @import("std");
 // suites de test y un cross-compile a Linux/musl (paso `unix`).
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
-    // ReleaseFast POR DEFECTO: `standardOptimizeOption(.{})` devuelve Debug
+    // Zig 0.17: OptimizeMode usa snake_case -> .debug .safe .fast .small
+    // .fast POR DEFECTO: `standardOptimizeOption(.{})` devuelve .debug
     // salvo `-Doptimize`/`--release`, y aqui la velocidad pesa mas que el tamano.
-    //   zig build -> ReleaseFast | --release=safe -> ReleaseSafe | -Doptimize=Debug -> Debug
-    const optimize = b.option(std.builtin.OptimizeMode, "optimize", "Modo de optimizacion (por defecto: ReleaseFast)") orelse .ReleaseFast;
+    //   zig build            -> .fast | zig build -Doptimize=safe -> .safe | -Doptimize=debug -> .debug
+    const optimize = b.option(std.builtin.OptimizeMode, "optimize", "Modo de optimizacion (por defecto: fast)") orelse .fast;
 
     // Módulo de librería (puerta: src/root.zig). Reutilizable sin lanzar proceso.
     const mod = b.addModule("mcp_time", .{
@@ -33,7 +34,7 @@ pub fn build(b: *std.Build) void {
     const run_step = b.step("run", "Ejecuta el binario (servidor MCP o CLI)");
     const run_cmd = b.addRunArtifact(exe);
     run_cmd.step.dependOn(b.getInstallStep());
-    if (b.args) |args| run_cmd.addArgs(args);
+    run_cmd.addPassthruArgs();
     run_step.dependOn(&run_cmd.step);
 
     // Tests: módulo de librería + módulo del ejecutable.

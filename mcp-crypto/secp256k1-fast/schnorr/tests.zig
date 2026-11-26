@@ -9,7 +9,6 @@ const testing = std.testing;
 ///  Fuente: bitcoin/bips → bip-0340/test-vectors.csv (19 filas).
 ///  Se valida FIRMA (filas con clave secreta) y VERIFICACIÓN (todas las filas).
 /// ═══════════════════════════════════════════════════════════════════════════
-
 const Vector = struct {
     sk: ?[]const u8 = null,
     pk: []const u8,

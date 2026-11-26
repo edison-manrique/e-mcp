@@ -23,7 +23,7 @@ pub fn bracesBalanced(s: []const u8) bool {
         }
         if (c == '"') in_str = true else if (c == '{' or c == '[') depth += 1 else if (c == '}' or c == ']') {
             depth -= 1;
-            if (depth < 0) return true;
+            if (depth < 0) return false;
         }
     }
     return depth == 0 and !in_str;

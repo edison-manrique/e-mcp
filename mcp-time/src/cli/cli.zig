@@ -16,10 +16,10 @@ const dur = tm.dur;
 const MAX_H = 128;
 
 const FLAGS = [_][]const u8{
-    "--help",     "--help-topic", "--version", "--zone",   "-z",
-    "--format",   "-f",           "--patron",  "--fecha",  "--suma",
-    "--desde",    "--hasta",      "--en",      "--modo",   "--dias",
-    "--pais",     "--feriados",   "--detalle", "--epoca",  "--formato",
+    "--help",   "--help-topic", "--version", "--zone",  "-z",
+    "--format", "-f",           "--patron",  "--fecha", "--suma",
+    "--desde",  "--hasta",      "--en",      "--modo",  "--dias",
+    "--pais",   "--feriados",   "--detalle", "--epoca", "--formato",
 };
 
 fn cliErr(err: *Io.Writer, msg: []const u8) u8 {

@@ -16,11 +16,12 @@ const std = @import("std");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
-    // ReleaseFast por defecto (igual que el MCP): `standardOptimizeOption` con
-    // `preferred_optimize_mode` devolvía Debug salvo `-Drelease`, dejando las
-    // CLIs ~5x más lentas. Ahora: `zig build` -> ReleaseFast,
-    // `-Doptimize=Debug` -> Debug, `--release=safe|small` -> equivalente.
-    const optimize = b.option(std.builtin.OptimizeMode, "optimize", "Modo de optimización (por defecto: ReleaseFast)") orelse .ReleaseFast;
+    // Zig 0.17: OptimizeMode usa snake_case -> .debug .safe .fast .small
+    // .fast por defecto (igual que el MCP): `standardOptimizeOption` con
+    // `preferred_optimize_mode` devolvía .debug salvo `-Drelease`, dejando las
+    // CLIs ~5x más lentas. Ahora: `zig build` -> .fast,
+    // `-Doptimize=debug` -> .debug, `--release=safe|small` -> equivalente.
+    const optimize = b.option(std.builtin.OptimizeMode, "optimize", "Modo de optimización (por defecto: fast)") orelse .fast;
 
     // ═══════════════════════════════════════════════════════════════════════
     //  Módulo de la librería (nativo)
@@ -39,11 +40,11 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(kangaroo);
 
     const run_vanity = b.addRunArtifact(vanity);
-    if (b.args) |args| run_vanity.addArgs(args);
+    run_vanity.addPassthruArgs();
     b.step("vanity", "Ejecuta la CLI de direcciones vanity (nativa)").dependOn(&run_vanity.step);
 
     const run_kangaroo = b.addRunArtifact(kangaroo);
-    if (b.args) |args| run_kangaroo.addArgs(args);
+    run_kangaroo.addPassthruArgs();
     b.step("kangaroo", "Ejecuta la CLI de Kangaroo / puzzle (nativa)").dependOn(&run_kangaroo.step);
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -121,7 +122,7 @@ fn cliCross(
         .root_source_file = b.path("root.zig"),
         .target = target,
     });
-    const exe = cliExe(b, name, src, secp, target, .ReleaseFast);
+    const exe = cliExe(b, name, src, secp, target, .fast);
     const inst = b.addInstallArtifact(exe, .{
         .dest_dir = .{ .override = .{ .custom = dir } },
     });

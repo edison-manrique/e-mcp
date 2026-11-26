@@ -427,7 +427,6 @@ pub fn buscar(gpa: std.mem.Allocator, io: Io, o: BuscarOpts) !SearchOut {
     return .{ .matches = try b.tmp.toOwnedSlice(gpa), .total = b.total, .omitidos = b.omitidos, .truncado = truncado };
 }
 
-
 // ---------- Tests (los corre `zig build test`) ----------
 
 test "encuentra: sensible e insensible a mayúsculas" {

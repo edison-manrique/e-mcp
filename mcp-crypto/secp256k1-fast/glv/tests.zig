@@ -12,7 +12,6 @@ const testing = std.testing;
 ///  cumplía), lo que hacía que `mulGLV` devolviera puntos incorrectos.
 ///  Referencia cruzada: `generator.mulG` (validado por BIP-32/44/86).
 /// ═══════════════════════════════════════════════════════════════════════════
-
 const Scalar256 = scalar.Scalar256;
 const LAMBDA = Scalar256{ .limbs = constants.LAMBDA_LIMBS };
 

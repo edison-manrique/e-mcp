@@ -72,8 +72,8 @@ export fn ermc_engine_build_dictionary(
 
     for (0..n_acts) |i| {
         const code = act_codes[i];
-        if (code <= @intFromEnum(root.Activation.Interaction)) {
-            acts[i] = @enumFromInt(code);
+        if (code <= @backingInt(root.Activation.Interaction)) {
+            acts[i] = @fromBackingInt(@intCast(code));
         } else {
             acts[i] = .Identity;
         }
@@ -336,7 +336,6 @@ export fn ermc_wasm_free(ptr: u32, n_bytes: usize) void {
     ermc_free(ptr, n_bytes);
 }
 
-
 // ===========================================================================
 // ARITMÉTICA MODULAR EN F_p (Nuevo en v0.4.0)
 // ===========================================================================
@@ -381,8 +380,10 @@ export fn ermc_ec_is_on_curve(x: u64, y: u64, p: u64) u32 {
 /// Suma de puntos P + Q. Resultado escrito en out_ptr (2 × u64 = 16 bytes).
 /// Devuelve 1 en éxito, 0 en error.
 export fn ermc_ec_add(
-    px: u64, py: u64,
-    qx: u64, qy: u64,
+    px: u64,
+    py: u64,
+    qx: u64,
+    qy: u64,
     p: u64,
     out_ptr: u32,
 ) u32 {
@@ -400,7 +401,8 @@ export fn ermc_ec_add(
 /// Multiplicación escalar k·P. Resultado en out_ptr (2 × u64 = 16 bytes).
 export fn ermc_ec_scalar_mul(
     k: u64,
-    px: u64, py: u64,
+    px: u64,
+    py: u64,
     p: u64,
     out_ptr: u32,
 ) u32 {
@@ -440,4 +442,3 @@ export fn ermc_prime_count_pi(x: f64, max_n: usize) usize {
 export fn ermc_logarithmic_integral_li(x: f64) f64 {
     return root.series.logarithmicIntegralLi(x);
 }
-

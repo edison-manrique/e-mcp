@@ -22,54 +22,39 @@ inline fn toLowerAscii(c: u8) u8 {
 }
 
 /// Comprueba si `haystack` contiene `needle` ignorando mayusculas/minusculas ASCII.
-/// Para needles <= 128 bytes usa un buffer de stack + std.mem.indexOf (SIMD-friendly).
+/// Usa busqueda en una sola pasada con `indexOfScalarPos` / `indexOfAnyPos` (SIMD-friendly).
 fn containsIgnoreCase(haystack: []const u8, needle: []const u8) bool {
     if (needle.len == 0) return true;
     if (needle.len > haystack.len) return false;
 
-    // Caso rapido: needle corto -> lowercase en stack, busqueda nativa
-    if (needle.len <= 128) {
-        var needle_low: [128]u8 = undefined;
-        for (needle, 0..) |c, i| needle_low[i] = toLowerAscii(c);
-        const nl = needle_low[0..needle.len];
+    const c0 = toLowerAscii(needle[0]);
+    const is_alpha = c0 >= 'a' and c0 <= 'z';
+    const pair = [2]u8{ c0, if (is_alpha) c0 - 32 else c0 };
+    const limit = haystack.len - needle.len;
 
-        var i: usize = 0;
-        while (i + needle.len <= haystack.len) {
-            // Busca primer byte coincidente con needle_low[0]
-            const rest = haystack[i..];
-            const pos = std.mem.indexOf(u8, rest, &[_]u8{nl[0]}) orelse {
-                // Intenta tambien la version uppercase del primer byte
-                const up = needle[0]; // ya esta en lower, pero haystack puede tener upper
-                _ = up;
-                break;
-            };
-            const start = i + pos;
-            if (start + needle.len > haystack.len) break;
-            if (std.ascii.eqlIgnoreCase(haystack[start .. start + needle.len], needle)) return true;
-            i = start + 1;
-        }
-        // Segunda pasada: primer byte como uppercase (A-Z)
-        const first_up = if (nl[0] >= 'a' and nl[0] <= 'z') nl[0] - 32 else 0;
-        if (first_up != 0) {
-            var j: usize = 0;
-            while (j + needle.len <= haystack.len) {
-                const rest2 = haystack[j..];
-                const pos2 = std.mem.indexOf(u8, rest2, &[_]u8{first_up}) orelse break;
-                const start2 = j + pos2;
-                if (start2 + needle.len > haystack.len) break;
-                if (std.ascii.eqlIgnoreCase(haystack[start2 .. start2 + needle.len], needle)) return true;
-                j = start2 + 1;
-            }
-        }
-        return false;
-    }
-
-    // Fallback: needle largo -> comparacion byte a byte
     var i: usize = 0;
-    while (i + needle.len <= haystack.len) : (i += 1) {
-        if (std.ascii.eqlIgnoreCase(haystack[i .. i + needle.len], needle)) return true;
+    while (i <= limit) {
+        const pos = if (is_alpha)
+            std.mem.indexOfAnyPos(u8, haystack, i, &pair)
+        else
+            std.mem.indexOfScalarPos(u8, haystack, i, c0);
+        const start = pos orelse return false;
+        if (start > limit) return false;
+        if (std.ascii.eqlIgnoreCase(haystack[start .. start + needle.len], needle)) return true;
+        i = start + 1;
     }
     return false;
+}
+
+/// Comprueba si todos los `tokens` aparecen en mcp_name, tool_name o description.
+fn matchesTokens(entry: ToolEntry, tokens: []const []const u8) bool {
+    for (tokens) |token| {
+        const hit = containsIgnoreCase(entry.mcp_name, token) or
+            containsIgnoreCase(entry.tool_name, token) or
+            containsIgnoreCase(entry.description, token);
+        if (!hit) return false;
+    }
+    return true;
 }
 
 /// Devuelve true si todos los tokens de `query` aparecen en mcp_name, tool_name o description.
@@ -85,7 +70,7 @@ pub fn matchesQuery(entry: ToolEntry, query: []const u8) bool {
 }
 
 /// Filtra `entries` por `query` y opcionalmente `mcp_filter`, respetando `limit` (por defecto 20).
-/// Pre-alloca `min(entries.len, cap)` slots para evitar reallocs en el caso tipico.
+/// Pre-tokeniza `query` una sola vez y pre-alloca `min(entries.len, cap)` slots.
 pub fn searchTools(
     allocator: std.mem.Allocator,
     entries: []const ToolEntry,
@@ -98,11 +83,27 @@ pub fn searchTools(
     var out = try std.ArrayListUnmanaged(ToolEntry).initCapacity(allocator, pre);
     errdefer out.deinit(allocator);
 
+    // Pre-tokeniza en stack (hasta 16 tokens; si hay mas, usa matchesQuery).
+    var tok_buf: [16][]const u8 = undefined;
+    var tok_len: usize = 0;
+    var overflow = false;
+    var it = std.mem.tokenizeAny(u8, query, " \t\r\n");
+    while (it.next()) |token| {
+        if (tok_len < tok_buf.len) {
+            tok_buf[tok_len] = token;
+            tok_len += 1;
+        } else {
+            overflow = true;
+            break;
+        }
+    }
+
     for (entries) |entry| {
         if (mcp_filter) |f| {
             if (f.len > 0 and !std.ascii.eqlIgnoreCase(entry.mcp_name, f)) continue;
         }
-        if (matchesQuery(entry, query)) {
+        const ok = if (overflow) matchesQuery(entry, query) else matchesTokens(entry, tok_buf[0..tok_len]);
+        if (ok) {
             try out.append(allocator, entry);
             if (out.items.len >= cap) break;
         }
@@ -164,4 +165,3 @@ test "emcp.search: filtra por nombre, descripcion, multi-token y mcp" {
     defer t.allocator.free(r8);
     try t.expectEqual(@as(usize, 4), r8.len);
 }
-

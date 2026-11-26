@@ -5,7 +5,6 @@ const raw = @import("raw.zig");
 /// ═══════════════════════════════════════════════════════════════════════════
 ///  source/scalar/addsub.zig — 256-bit Scalar Addition & Subtraction mod N
 /// ═══════════════════════════════════════════════════════════════════════════
-
 pub const AddRawResult = struct {
     limbs: [4]u64,
     carry: u1,
